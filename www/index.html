@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Tarjetas de Español</title>
+<style>
+  :root{
+    --navy:#1B2A45;
+    --navy-deep:#111B30;
+    --gold:#C99A3D;
+    --brick:#B5432E;
+    --paper:#F1E6CF;
+    --sage:#5F7A52;
+    --plum:#6B3F5C;
+    --teal:#3E7C74;
+    --rose:#A8546B;
+    --steel:#4A6D7C;
+    --ink:#22293A;
+    --ok:#4C7A3F;
+    --bad:#A8342A;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{height:100%; overscroll-behavior:none;}
+  body{
+    margin:0;
+    min-height:100vh;
+    background:
+      radial-gradient(circle at 15% 10%, rgba(201,154,61,0.10), transparent 40%),
+      radial-gradient(circle at 85% 90%, rgba(181,67,46,0.10), transparent 40%),
+      var(--navy-deep);
+    font-family:'Georgia', 'Iowan Old Style', serif;
+    color:var(--paper);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:14px 12px 28px;
+  }
+  h1{
+    font-family:'Palatino Linotype', 'Book Antiqua', Georgia, serif;
+    font-weight:400;
+    letter-spacing:.5px;
+    font-size:22px;
+    margin:0 0 2px;
+    color:var(--gold);
+    text-align:center;
+  }
+  .sub{
+    font-size:11px;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    color:rgba(241,230,207,0.55);
+    margin-bottom:8px;
+    text-align:center;
+  }
+
+  .profilebar{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-family:'Trebuchet MS', sans-serif;
+    font-size:12px;
+    color:rgba(241,230,207,0.8);
+    margin-bottom:8px;
+    background:rgba(241,230,207,0.06);
+    border:1px solid rgba(241,230,207,0.2);
+    padding:6px 12px;
+    border-radius:20px;
+  }
+  .profilebar b{ color:var(--gold); }
+  .profilebar .switch-link{
+    text-decoration:underline;
+    cursor:pointer;
+    color:var(--paper);
+    opacity:.8;
+  }
+
+  .statbar{
+    display:flex;
+    gap:14px;
+    align-items:center;
+    justify-content:center;
+    font-family:'Trebuchet MS', sans-serif;
+    font-size:12px;
+    color:rgba(241,230,207,0.75);
+    margin-bottom:10px;
+    flex-wrap:wrap;
+  }
+  .statbar b{ color:var(--paper); }
+  .statbar .ok-n{ color:#8FCB7A; font-weight:bold; }
+  .statbar .bad-n{ color:#E8877A; font-weight:bold; }
+  .stat-link{
+    text-decoration:underline;
+    cursor:pointer;
+    color:var(--gold);
+  }
+
+  .groups{
+    display:flex;
+    gap:6px;
+    flex-wrap:wrap;
+    justify-content:center;
+    margin-bottom:10px;
+  }
+  .group-btn{
+    font-family:'Trebuchet MS', sans-serif;
+    font-size:11.5px;
+    letter-spacing:.5px;
+    padding:6px 12px;
+    border-radius:16px;
+    border:1px solid rgba(241,230,207,0.3);
+    background:transparent;
+    color:rgba(241,230,207,0.7);
+    cursor:pointer;
+    text-transform:uppercase;
+    transition:all .2s ease;
+  }
+  .group-btn.active{
+    background:var(--paper);
+    color:var(--navy-deep);
+    font-weight:bold;
+    border-color:var(--paper);
+  }
+
+  .tabs{
+    display:flex;
+    gap:6px;
+    flex-wrap:wrap;
+    justify-content:center;
+    margin-bottom:14px;
+    max-width:520px;
+    min-height:30px;
+  }
+  .tab{
+    font-family:'Trebuchet MS', sans-serif;
+    font-size:11px;
+    letter-spacing:.5px;
+    padding:6px 12px;
+    border-radius:3px;
+    border:1px solid rgba(241,230,207,0.25);
+    background:rgba(241,230,207,0.06);
+    color:rgba(241,230,207,0.8);
+    cursor:pointer;
+    transition:all .2s ease;
+    text-transform:uppercase;
+  }
+  .tab.active{ border-color:transparent; color:var(--navy-deep); font-weight:bold; }
+  .tab[data-cat="AR"].active{ background:var(--sage); }
+  .tab[data-cat="ER"].active{ background:var(--gold); }
+  .tab[data-cat="IR"].active{ background:var(--brick); color:var(--paper);}
+  .tab[data-cat="IRR"].active{ background:var(--plum); color:var(--paper);}
+  .tab[data-cat="SUST"].active{ background:var(--teal); color:var(--paper);}
+  .tab[data-cat="ADJ"].active{ background:var(--rose); color:var(--paper);}
+  .tab[data-cat="PREP"].active{ background:var(--steel); color:var(--paper);}
+  .tab[data-cat="ALL"].active{ background:var(--paper); }
+
+  .stage{
+    perspective:1400px;
+    width:100%;
+    max-width:360px;
+    height:340px;
+    margin-bottom:14px;
+  }
+  .card{
+    width:100%;
+    height:100%;
+    position:relative;
+    transform-style:preserve-3d;
+    transition:transform .5s cubic-bezier(.4,.2,.2,1);
+    cursor:default;
+  }
+  .card.answered{ cursor:pointer; }
+  .card.flipped{ transform:rotateY(180deg); }
+  .face{
+    position:absolute;
+    inset:0;
+    backface-visibility:hidden;
+    border-radius:6px;
+    box-shadow:0 14px 32px rgba(0,0,0,0.45);
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+    background:var(--paper);
+    color:var(--ink);
+    border:3px solid transparent;
+  }
+  .face::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    border:2px dashed rgba(34,41,58,0.15);
+    margin:8px;
+    border-radius:3px;
+    pointer-events:none;
+  }
+  .front{
+    align-items:center;
+    justify-content:center;
+    background:
+      repeating-linear-gradient(0deg, rgba(34,41,58,0.035) 0px, rgba(34,41,58,0.035) 1px, transparent 1px, transparent 30px),
+      var(--paper);
+  }
+  .cat-flag{
+    position:absolute;
+    top:0; right:0;
+    font-family:'Trebuchet MS', sans-serif;
+    font-size:10.5px;
+    letter-spacing:1.2px;
+    color:var(--paper);
+    padding:5px 11px 5px 14px;
+    border-bottom-left-radius:8px;
+    z-index:2;
+  }
+  .cat-AR{ background:var(--sage); }
+  .cat-ER{ background:var(--gold); color:var(--navy-deep); }
+  .cat-IR{ background:var(--brick); }
+  .cat-IRR{ background:var(--plum); }
+  .cat-SUST{ background:var(--teal); }
+  .cat-ADJ{ background:var(--rose); }
+  .cat-PREP{ background:var(--steel); }
+
+  .infinitive{
+    font-size:34px;
+    font-weight:700;
+    color:var(--navy);
+    letter-spacing:.5px;
+    text-align:center;
+    padding:0 18px;
+  }
+  .task-label{
+    margin-top:10px;
+    font-size:11.5px;
+    color:rgba(34,41,58,0.5);
+    font-family:'Trebuchet MS', sans-serif;
+    letter-spacing:.5px;
+    text-align:center;
+    padding:0 20px;
+  }
+
+  .back{
+    padding:16px 18px 14px;
+    justify-content:flex-start;
+    transform:rotateY(180deg);
+    background:var(--paper);
+    overflow-y:auto;
+  }
+  .feedback{
+    font-family:'Trebuchet MS', sans-serif;
+    font-weight:bold;
+    font-size:14px;
+    margin-bottom:8px;
+    padding:6px 10px;
+    border-radius:4px;
+  }
+  .feedback.ok{ background:rgba(76,122,63,0.15); color:var(--ok); }
+  .feedback.bad{ background:rgba(168,52,42,0.15); color:var(--bad); }
+  .back .translation{
+    font-size:18px;
+    color:var(--brick);
+    font-style:italic;
+    margin-bottom:10px;
+    border-bottom:1px solid rgba(34,41,58,0.15);
+    padding-bottom:8px;
+  }
+  .conj-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:4px 14px;
+    font-family:'Trebuchet MS', sans-serif;
+    font-size:13px;
+    margin-bottom:10px;
+  }
+  .conj-row{
+    display:flex;
+    justify-content:space-between;
+    border-bottom:1px dotted rgba(34,41,58,0.18);
+    padding:3px 0;
+  }
+  .pron{ color:rgba(34,41,58,0.55); }
+  .form{ font-weight:bold; color:var(--navy); }
+
+  .form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:6px 12px;
+    font-family:'Trebuchet MS', sans-serif;
+    font-size:13px;
+    margin-bottom:10px;
+  }
+  .form-cell{ background:rgba(34,41,58,0.05); border-radius:4px; padding:6px 8px; }
+  .form-cell .lbl{
+    display:block; font-size:9.5px; letter-spacing:1px; text-transform:uppercase;
+    color:rgba(34,41,58,0.45); margin-bottom:2px;
+  }
+  .form-cell .val{ font-weight:bold; color:var(--navy); }
+
+  .examples-list{ display:flex; flex-direction:column; gap:6px; }
+  .example{
+    font-family:'Trebuchet MS', sans-serif;
+    font-size:12.5px;
+    color:rgba(34,41,58,0.75);
+    background:rgba(34,41,58,0.05);
+    border-left:3px solid var(--brick);
+    padding:8px 10px;
+    border-radius:0 4px 4px 0;
+    line-height:1.45;
+  }
+
+  .answer-row{
+    display:flex;
+    gap:8px;
+    width:100%;
+    max-width:360px;
+    margin-bottom:12px;
+  }
+  .answer-row input{
+    flex:1;
+    font-family:'Trebuchet MS', sans-serif;
+    font-size:16px;
+    padding:12px 12px;
+    border-radius:4px;
+    border:1px solid rgba(241,230,207,0.35);
+    background:rgba(241,230,207,0.08);
+    color:var(--paper);
+  }
+  .answer-row input::placeholder{ color:rgba(241,230,207,0.4); }
+  .answer-row input:disabled{ opacity:.6; }
+  button.check{
+    background:var(--gold);
+    border:none;
+    color:var(--navy-deep);
+    font-weight:bold;
+    font-family:'Trebuchet MS', sans-serif;
+    font-size:14px;
+    padding:0 18px;
+    border-radius:4px;
+    cursor:pointer;
+  }
+  button.check:disabled{ opacity:.5; }
+
+  .controls{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-family:'Trebuchet MS', sans-serif;
+    margin-top:2px;
+  }
+  button.nav{
+    background:var(--navy);
+    border:1px solid var(--gold);
+    color:var(--gold);
+    font-size:13px;
+    padding:9px 14px;
+    border-radius:3px;
+    cursor:pointer;
+    letter-spacing:.5px;
+  }
+  button.shuffle{ background:transparent; border:1px solid rgba(241,230,207,0.4); color:var(--paper); }
+  .counter{ font-size:12px; color:rgba(241,230,207,0.6); min-width:56px; text-align:center; }
+
+  .footer-note{
+    margin-top:16px;
+    font-size:11px;
+    color:rgba(241,230,207,0.4);
+    text-align:center;
+    max-width:340px;
+    font-family:'Trebuchet MS', sans-serif;
+  }
+
+  /* Modal */
+  .modal-bg{
+    position:fixed; inset:0; background:rgba(17,27,48,0.9);
+    display:none; align-items:center; justify-content:center; z-index:50; padding:20px;
+  }
+  .modal-bg.open{ display:flex; }
+  .modal{
+    background:var(--paper); color:var(--ink); border-radius:8px;
+    max-width:380px; width:100%; max-height:85vh; overflow-y:auto;
+    padding:20px; font-family:'Trebuchet MS', sans-serif;
+  }
+  .modal h2{ font-family:Georgia, serif; color:var(--navy); margin-top:0; font-size:19px; }
+  .modal p.hint{ font-size:12.5px; color:rgba(34,41,58,0.6); margin-top:-6px; margin-bottom:14px; }
+  .modal-row{
+    display:flex; justify-content:space-between; align-items:center; padding:7px 0;
+    border-bottom:1px solid rgba(34,41,58,0.12); font-size:13.5px;
+  }
+  .modal-row .n{ color:var(--ink); }
+  .modal-row .v b{ color:var(--ok); }
+  .modal-row .v span.bad{ color:var(--bad); font-weight:bold; }
+  .modal-close, .modal-reset{
+    margin-top:16px; width:100%; padding:10px; border:none; border-radius:4px;
+    font-weight:bold; cursor:pointer; font-family:'Trebuchet MS', sans-serif;
+  }
+  .modal-close{ background:var(--navy); color:var(--gold); }
+  .modal-reset{ background:transparent; border:1px solid var(--bad); color:var(--bad); margin-top:8px;}
+
+  .profile-row{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:11px 12px; margin-bottom:8px; border-radius:6px;
+    background:rgba(34,41,58,0.06); cursor:pointer; font-size:14.5px; font-weight:bold;
+    color:var(--navy);
+  }
+  .profile-row:hover{ background:rgba(34,41,58,0.12); }
+  .profile-row .del{
+    color:var(--bad); font-weight:normal; font-size:12px; text-decoration:underline; cursor:pointer;
+  }
+  .new-profile-row{
+    display:flex; gap:8px; margin-top:10px;
+  }
+  .new-profile-row input{
+    flex:1; padding:10px; border-radius:4px; border:1px solid rgba(34,41,58,0.25);
+    font-family:'Trebuchet MS', sans-serif; font-size:14px;
+  }
+  .new-profile-row button{
+    background:var(--gold); border:none; color:var(--navy-deep); font-weight:bold;
+    padding:0 14px; border-radius:4px; cursor:pointer; font-family:'Trebuchet MS', sans-serif;
+  }
+</style>
+</head>
+<body>
+
+  <h1>Tarjetas de Español</h1>
+  <div class="sub">Глаголы · Существительные · Прилагательные · Предлоги</div>
+
+  <div class="profilebar">
+    👤 <b id="currentUserLabel">—</b>
+    <span class="switch-link" id="switchProfileBtn">сменить профиль</span>
+  </div>
+
+  <div class="statbar">
+    <span>✅ <span class="ok-n" id="okCount">0</span></span>
+    <span>❌ <span class="bad-n" id="badCount">0</span></span>
+    <span>Точность: <b id="accPct">—</b></span>
+    <span class="stat-link" id="openStats">Статистика по темам →</span>
+  </div>
+
+  <div class="groups" id="groups"></div>
+  <div class="tabs" id="tabs"></div>
+
+  <div class="stage">
+    <div class="card" id="card">
+      <div class="face front">
+        <div class="cat-flag" id="catFlag">AR</div>
+        <div class="infinitive" id="infinitive">hablar</div>
+        <div class="task-label" id="taskLabel">напиши перевод (инфинитив)</div>
+      </div>
+      <div class="face back">
+        <div class="feedback" id="feedback">✅ Верно!</div>
+        <div class="translation" id="translation">говорить</div>
+        <div id="backBody"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="answer-row">
+    <input type="text" id="answerInput" placeholder="напиши перевод по-русски" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+    <button class="check" id="checkBtn">Ответить</button>
+  </div>
+
+  <div class="controls">
+    <button class="nav" id="prevBtn">← Назад</button>
+    <div class="counter" id="counter">1 / 30</div>
+    <button class="nav" id="nextBtn">Дальше →</button>
+  </div>
+  <div class="controls" style="margin-top:8px;">
+    <button class="nav shuffle" id="shuffleBtn">🔀 Перемешать</button>
+  </div>
+
+  <div class="footer-note">Напиши перевод русскими буквами и нажми «Ответить» (или Enter). Для глаголов — в инфинитиве. Для прилагательных подойдёт и мужской, и женский род. После ответа карточку можно листать туда-обратно.</div>
+
+  <div class="modal-bg" id="modalBg">
+    <div class="modal">
+      <h2>Статистика по темам</h2>
+      <div id="modalBody"></div>
+      <button class="modal-close" id="modalCloseBtn">Закрыть</button>
+      <button class="modal-reset" id="modalResetBtn">Сбросить статистику этого профиля</button>
+    </div>
+  </div>
+
+  <div class="modal-bg" id="profileModalBg">
+    <div class="modal">
+      <h2>Выбери профиль</h2>
+      <p class="hint">У каждого профиля — своя отдельная статистика.</p>
+      <div id="profileList"></div>
+      <div class="new-profile-row">
+        <input type="text" id="newProfileInput" placeholder="имя нового профиля" maxlength="20">
+        <button id="addProfileBtn">Создать</button>
+      </div>
+      <button class="modal-close" id="profileModalCloseBtn" style="display:none;">Закрыть</button>
+    </div>
+  </div>
+
+<script>
+const pronouns = ["yo","tú","él / ella","nosotros","vosotros","ellos"];
+
+const items = [
+  // ===================== VERBOS -AR (18) =====================
+  {type:"verb", front:"hablar", cat:"AR", group:"verb", tr:"говорить", forms:["hablo","hablas","habla","hablamos","habláis","hablan"], examples:["Hablo español todos los días. — Я говорю по-испански каждый день.","¿Hablas inglés? — Ты говоришь по-английски?","Ellos hablan por teléfono. — Они разговаривают по телефону."]},
+  {type:"verb", front:"trabajar", cat:"AR", group:"verb", tr:"работать", forms:["trabajo","trabajas","trabaja","trabajamos","trabajáis","trabajan"], examples:["Trabajo en una escuela. — Я работаю в школе.","¿Dónde trabajas? — Где ты работаешь?","Trabajamos juntos en la oficina. — Мы работаем вместе в офисе."]},
+  {type:"verb", front:"estudiar", cat:"AR", group:"verb", tr:"учиться, изучать", forms:["estudio","estudias","estudia","estudiamos","estudiáis","estudian"], examples:["Estudio español desde hace un año. — Я изучаю испанский уже год.","Estudias mucho para el examen. — Ты много готовишься к экзамену.","Ellos estudian en la universidad. — Они учатся в университете."]},
+  {type:"verb", front:"caminar", cat:"AR", group:"verb", tr:"идти пешком", forms:["camino","caminas","camina","caminamos","camináis","caminan"], examples:["Camino al trabajo cada mañana. — Я хожу на работу пешком каждое утро.","Caminas muy rápido. — Ты идёшь очень быстро.","Caminamos por el parque. — Мы гуляем по парку."]},
+  {type:"verb", front:"comprar", cat:"AR", group:"verb", tr:"покупать", forms:["compro","compras","compra","compramos","compráis","compran"], examples:["Compro pan cada mañana. — Я покупаю хлеб каждое утро.","¿Qué compras hoy? — Что ты покупаешь сегодня?","Ellos compran fruta en el mercado. — Они покупают фрукты на рынке."]},
+  {type:"verb", front:"llegar", cat:"AR", group:"verb", tr:"приходить, прибывать", forms:["llego","llegas","llega","llegamos","llegáis","llegan"], examples:["Llego a casa a las seis. — Я прихожу домой в шесть.","Llegas tarde otra vez. — Ты снова опаздываешь.","Llegamos a las ocho. — Мы приходим в восемь."]},
+  {type:"verb", front:"mirar", cat:"AR", group:"verb", tr:"смотреть", forms:["miro","miras","mira","miramos","miráis","miran"], examples:["Miro la televisión por la noche. — Я смотрю телевизор вечером.","¿Qué miras? — На что ты смотришь?","Ellos miran la televisión. — Они смотрят телевизор."]},
+  {type:"verb", front:"necesitar", cat:"AR", group:"verb", tr:"нуждаться", forms:["necesito","necesitas","necesita","necesitamos","necesitáis","necesitan"], examples:["Necesito más tiempo. — Мне нужно больше времени.","Necesitas descansar. — Тебе нужно отдохнуть.","Necesitamos ayuda. — Нам нужна помощь."]},
+  {type:"verb", front:"cantar", cat:"AR", group:"verb", tr:"петь", forms:["canto","cantas","canta","cantamos","cantáis","cantan"], examples:["Canto en la ducha. — Я пою в душе.","Cantas muy bien. — Ты хорошо поёшь.","Ellos cantan en el coro. — Они поют в хоре."]},
+  {type:"verb", front:"bailar", cat:"AR", group:"verb", tr:"танцевать", forms:["bailo","bailas","baila","bailamos","bailáis","bailan"], examples:["Bailo salsa los fines de semana. — По выходным я танцую сальсу.","¿Sabes bailar tango? — Ты умеешь танцевать танго?","Bailamos toda la noche. — Мы танцевали всю ночь."]},
+  {type:"verb", front:"cocinar", cat:"AR", group:"verb", tr:"готовить", forms:["cocino","cocinas","cocina","cocinamos","cocináis","cocinan"], examples:["Cocino la cena todos los días. — Я готовлю ужин каждый день.","Cocinas muy bien. — Ты хорошо готовишь.","Ellos cocinan juntos los domingos. — Они готовят вместе по воскресеньям."]},
+  {type:"verb", front:"escuchar", cat:"AR", group:"verb", tr:"слушать", forms:["escucho","escuchas","escucha","escuchamos","escucháis","escuchan"], examples:["Escucho música mientras trabajo. — Я слушаю музыку во время работы.","¿Escuchas este podcast? — Ты слушаешь этот подкаст?","Escuchamos las noticias juntos. — Мы вместе слушаем новости."]},
+  {type:"verb", front:"ayudar", cat:"AR", group:"verb", tr:"помогать", forms:["ayudo","ayudas","ayuda","ayudamos","ayudáis","ayudan"], examples:["Ayudo a mi madre en casa. — Я помогаю маме дома.","Me ayudas mucho. — Ты мне очень помогаешь.","Ellos ayudan a los vecinos. — Они помогают соседям."]},
+  {type:"verb", front:"viajar", cat:"AR", group:"verb", tr:"путешествовать", forms:["viajo","viajas","viaja","viajamos","viajáis","viajan"], examples:["Viajo mucho por trabajo. — Я много путешествую по работе.","¿Viajas solo o con amigos? — Ты путешествуешь один или с друзьями?","Viajamos a España en verano. — Мы едем в Испанию летом."]},
+  {type:"verb", front:"terminar", cat:"AR", group:"verb", tr:"заканчивать", forms:["termino","terminas","termina","terminamos","termináis","terminan"], examples:["Termino el trabajo a las cinco. — Я заканчиваю работу в пять.","¿A qué hora terminas? — Во сколько ты заканчиваешь?","Ellos terminan el proyecto mañana. — Они закончат проект завтра."]},
+  {type:"verb", front:"pasar", cat:"AR", group:"verb", tr:"проходить", forms:["paso","pasas","pasa","pasamos","pasáis","pasan"], examples:["Paso mucho tiempo en casa. — Я провожу много времени дома.","¿Qué te pasa? — Что с тобой происходит?","Pasamos por tu casa. — Мы проходим мимо твоего дома."]},
+  {type:"verb", front:"tomar", cat:"AR", group:"verb", tr:"брать", forms:["tomo","tomas","toma","tomamos","tomáis","toman"], examples:["Tomo café por la mañana. — Утром я пью кофе.","¿Tomas té o café? — Ты пьёшь чай или кофе?","Ellos toman el autobús cada día. — Они каждый день ездят на автобусе."]},
+  {type:"verb", front:"buscar", cat:"AR", group:"verb", tr:"искать", forms:["busco","buscas","busca","buscamos","buscáis","buscan"], examples:["Busco trabajo nuevo. — Я ищу новую работу.","¿Qué buscas? — Что ты ищешь?","Buscamos un buen restaurante. — Мы ищем хороший ресторан."]},
+
+  // ===================== VERBOS -ER (12) =====================
+  {type:"verb", front:"comer", cat:"ER", group:"verb", tr:"есть, кушать", forms:["como","comes","come","comemos","coméis","comen"], examples:["Como frutas todos los días. — Я ем фрукты каждый день.","¿Comes carne? — Ты ешь мясо?","Ellos comen a las dos. — Они обедают в два часа."]},
+  {type:"verb", front:"beber", cat:"ER", group:"verb", tr:"пить", forms:["bebo","bebes","bebe","bebemos","bebéis","beben"], examples:["Bebo agua todo el día. — Я пью воду весь день.","¿Qué bebes? — Что ты пьёшь?","Bebemos té por la tarde. — Мы пьём чай днём."]},
+  {type:"verb", front:"aprender", cat:"ER", group:"verb", tr:"учиться, узнавать", forms:["aprendo","aprendes","aprende","aprendemos","aprendéis","aprenden"], examples:["Aprendo español en línea. — Я учу испанский онлайн.","Aprendes rápido. — Ты быстро учишься.","Ellos aprenden español juntos. — Они вместе учат испанский."]},
+  {type:"verb", front:"leer", cat:"ER", group:"verb", tr:"читать", forms:["leo","lees","lee","leemos","leéis","leen"], examples:["Leo antes de dormir. — Я читаю перед сном.","¿Qué lees? — Что ты читаешь?","Leemos el mismo libro. — Мы читаем одну и ту же книгу."]},
+  {type:"verb", front:"comprender", cat:"ER", group:"verb", tr:"понимать", forms:["comprendo","comprendes","comprende","comprendemos","comprendéis","comprenden"], examples:["No comprendo esta palabra. — Я не понимаю это слово.","¿Comprendes la pregunta? — Ты понимаешь вопрос?","Ellos comprenden el problema. — Они понимают проблему."]},
+  {type:"verb", front:"vender", cat:"ER", group:"verb", tr:"продавать", forms:["vendo","vendes","vende","vendemos","vendéis","venden"], examples:["Vendo mi bicicleta vieja. — Я продаю свой старый велосипед.","¿Vendes tu coche? — Ты продаёшь свою машину?","Vendemos ropa usada. — Мы продаём подержанную одежду."]},
+  {type:"verb", front:"correr", cat:"ER", group:"verb", tr:"бегать", forms:["corro","corres","corre","corremos","corréis","corren"], examples:["Corro cinco kilómetros cada día. — Я бегаю пять километров каждый день.","Corres todas las mañanas. — Ты бегаешь каждое утро.","Ellos corren en el parque. — Они бегают в парке."]},
+  {type:"verb", front:"romper", cat:"ER", group:"verb", tr:"ломать", forms:["rompo","rompes","rompe","rompemos","rompéis","rompen"], examples:["Siempre rompo algo en la cocina. — Я всегда что-то ломаю на кухне.","Siempre rompes algo. — Ты всегда что-то ломаешь.","Ellos rompen las reglas. — Они нарушают правила."]},
+  {type:"verb", front:"deber", cat:"ER", group:"verb", tr:"быть должным", forms:["debo","debes","debe","debemos","debéis","deben"], examples:["Debo terminar este informe hoy. — Я должен закончить этот отчёт сегодня.","Debes estudiar más. — Тебе нужно больше учиться.","Debemos salir temprano. — Нам нужно выйти рано."]},
+  {type:"verb", front:"meter", cat:"ER", group:"verb", tr:"класть", forms:["meto","metes","mete","metemos","metéis","meten"], examples:["Meto la ropa en la lavadora. — Я кладу одежду в стиральную машину.","Metes la ropa en la maleta. — Ты кладёшь одежду в чемодан.","Ellos meten las manos en el agua. — Они кладут руки в воду."]},
+  {type:"verb", front:"prometer", cat:"ER", group:"verb", tr:"обещать", forms:["prometo","prometes","promete","prometemos","prometéis","prometen"], examples:["Te prometo llamar mañana. — Обещаю тебе позвонить завтра.","Me prometes ayudarme. — Ты обещаешь мне помочь.","Ellos prometen volver pronto. — Они обещают скоро вернуться."]},
+  {type:"verb", front:"responder", cat:"ER", group:"verb", tr:"отвечать", forms:["respondo","respondes","responde","respondemos","respondéis","responden"], examples:["Respondo todos los correos. — Я отвечаю на все письма.","¿Respondes a todos los mensajes? — Ты отвечаешь на все сообщения?","Respondemos rápido. — Мы отвечаем быстро."]},
+
+  // ===================== VERBOS -IR (10) =====================
+  {type:"verb", front:"vivir", cat:"IR", group:"verb", tr:"жить", forms:["vivo","vives","vive","vivimos","vivís","viven"], examples:["Vivo en Madrid desde hace dos años. — Я живу в Мадриде уже два года.","¿Dónde vives? — Где ты живёшь?","Ellos viven cerca de aquí. — Они живут рядом отсюда."]},
+  {type:"verb", front:"escribir", cat:"IR", group:"verb", tr:"писать", forms:["escribo","escribes","escribe","escribimos","escribís","escriben"], examples:["Escribo en mi diario cada noche. — Я пишу в дневнике каждый вечер.","Escribes muy bien. — Ты хорошо пишешь.","Escribimos cartas juntos. — Мы вместе пишем письма."]},
+  {type:"verb", front:"abrir", cat:"IR", group:"verb", tr:"открывать", forms:["abro","abres","abre","abrimos","abrís","abren"], examples:["Abro la ventana por la mañana. — Утром я открываю окно.","¿Abres la puerta? — Ты откроешь дверь?","Ellos abren la tienda a las nueve. — Они открывают магазин в девять."]},
+  {type:"verb", front:"decidir", cat:"IR", group:"verb", tr:"решать", forms:["decido","decides","decide","decidimos","decidís","deciden"], examples:["Decido rápido normalmente. — Обычно я решаю быстро.","Tú decides. — Решать тебе.","Decidimos juntos. — Мы решаем вместе."]},
+  {type:"verb", front:"recibir", cat:"IR", group:"verb", tr:"получать", forms:["recibo","recibes","recibe","recibimos","recibís","reciben"], examples:["Recibo muchos correos al día. — Я получаю много писем в день.","¿Recibes muchos mensajes? — Ты получаешь много сообщений?","Ellos reciben el paquete mañana. — Они получат посылку завтра."]},
+  {type:"verb", front:"subir", cat:"IR", group:"verb", tr:"подниматься", forms:["subo","subes","sube","subimos","subís","suben"], examples:["Subo las escaleras cada día. — Я поднимаюсь по лестнице каждый день.","Subes las escaleras rápido. — Ты быстро поднимаешься по лестнице.","Subimos al tercer piso. — Мы поднимаемся на третий этаж."]},
+  {type:"verb", front:"sufrir", cat:"IR", group:"verb", tr:"страдать", forms:["sufro","sufres","sufre","sufrimos","sufrís","sufren"], examples:["Sufro de insomnio a veces. — Иногда я страдаю от бессонницы.","Sufres mucho estrés. — Ты сильно страдаешь от стресса.","Ellos sufren por el calor. — Они страдают от жары."]},
+  {type:"verb", front:"permitir", cat:"IR", group:"verb", tr:"разрешать", forms:["permito","permites","permite","permitimos","permitís","permiten"], examples:["No permito mentiras en casa. — Я не допускаю лжи дома.","No me permites salir. — Ты не разрешаешь мне выйти.","Ellos permiten fotos aquí. — Они разрешают здесь фотографировать."]},
+  {type:"verb", front:"compartir", cat:"IR", group:"verb", tr:"делиться", forms:["comparto","compartes","comparte","compartimos","compartís","comparten"], examples:["Comparto mi comida con mis amigos. — Я делюсь едой с друзьями.","Compartes tu comida. — Ты делишься своей едой.","Compartimos un piso. — Мы снимаем квартиру вместе."]},
+  {type:"verb", front:"describir", cat:"IR", group:"verb", tr:"описывать", forms:["describo","describes","describe","describimos","describís","describen"], examples:["Describo el problema en detalle. — Я подробно описываю проблему.","Describes bien la situación. — Ты хорошо описываешь ситуацию.","Ellos describen el lugar. — Они описывают это место."]},
+
+  // ===================== VERBOS irregulares (10) =====================
+  {type:"verb", front:"ser", cat:"IRR", group:"verb", tr:"быть", forms:["soy","eres","es","somos","sois","son"], examples:["Soy de Rusia. — Я из России.","Tú eres muy amable. — Ты очень добрый.","Ellos son mis amigos. — Они мои друзья."]},
+  {type:"verb", front:"estar", cat:"IRR", group:"verb", tr:"быть", forms:["estoy","estás","está","estamos","estáis","están"], examples:["Estoy cansado hoy. — Сегодня я устал.","¿Estás bien? — Ты в порядке?","Estamos en casa. — Мы дома."]},
+  {type:"verb", front:"tener", cat:"IRR", group:"verb", tr:"иметь", forms:["tengo","tienes","tiene","tenemos","tenéis","tienen"], examples:["Tengo dos hermanos. — У меня два брата.","¿Tienes tiempo? — У тебя есть время?","Ellos tienen dos hijos. — У них двое детей."]},
+  {type:"verb", front:"ir", cat:"IRR", group:"verb", tr:"идти, ехать", forms:["voy","vas","va","vamos","vais","van"], examples:["Voy al trabajo en autobús. — Я езжу на работу на автобусе.","¿Adónde vas? — Куда ты идёшь?","Vamos al cine. — Мы идём в кино."]},
+  {type:"verb", front:"hacer", cat:"IRR", group:"verb", tr:"делать", forms:["hago","haces","hace","hacemos","hacéis","hacen"], examples:["Hago ejercicio cada mañana. — Я делаю зарядку каждое утро.","¿Qué haces? — Что ты делаешь?","Ellos hacen la tarea. — Они делают домашнее задание."]},
+  {type:"verb", front:"poder", cat:"IRR", group:"verb", tr:"мочь", forms:["puedo","puedes","puede","podemos","podéis","pueden"], examples:["No puedo salir hoy. — Я не могу выйти сегодня.","¿Puedes ayudarme? — Ты можешь мне помочь?","Podemos intentarlo. — Мы можем попробовать."]},
+  {type:"verb", front:"querer", cat:"IRR", group:"verb", tr:"хотеть, любить", forms:["quiero","quieres","quiere","queremos","queréis","quieren"], examples:["Quiero aprender español. — Я хочу выучить испанский.","¿Qué quieres? — Что ты хочешь?","Ellos quieren viajar. — Они хотят путешествовать."]},
+  {type:"verb", front:"decir", cat:"IRR", group:"verb", tr:"говорить, сказать", forms:["digo","dices","dice","decimos","decís","dicen"], examples:["Siempre digo la verdad. — Я всегда говорю правду.","¿Qué dices? — Что ты говоришь?","Decimos la verdad. — Мы говорим правду."]},
+  {type:"verb", front:"saber", cat:"IRR", group:"verb", tr:"знать", forms:["sé","sabes","sabe","sabemos","sabéis","saben"], examples:["No sé la respuesta. — Я не знаю ответа.","¿Sabes la respuesta? — Ты знаешь ответ?","Ellos saben nadar. — Они умеют плавать."]},
+  {type:"verb", front:"ver", cat:"IRR", group:"verb", tr:"видеть", forms:["veo","ves","ve","vemos","veis","ven"], examples:["Veo la televisión por la noche. — Вечером я смотрю телевизор.","¿Ves la película? — Ты смотришь фильм?","Vemos el mismo programa. — Мы смотрим ту же передачу."]},
+
+  // ===================== SUSTANTIVOS (50) =====================
+  {type:"noun", front:"casa", cat:"SUST", group:"noun", tr:"дом", article:"la", plural:"casas", examples:["Vivo en una casa grande. — Я живу в большом доме.","Limpio la casa los sábados. — Я убираю дом по субботам.","Su casa tiene un jardín bonito. — В его доме красивый сад."]},
+  {type:"noun", front:"tiempo", cat:"SUST", group:"noun", tr:"время, погода", article:"el", plural:"tiempos", examples:["No tengo tiempo hoy. — У меня нет времени сегодня.","El tiempo pasa rápido. — Время идёт быстро.","Hace buen tiempo hoy. — Сегодня хорошая погода."]},
+  {type:"noun", front:"agua", cat:"SUST", group:"noun", tr:"вода", article:"el (ж.р.!)", plural:"aguas", examples:["Bebo mucha agua. — Я пью много воды. (слово женское, артикль el из-за ударного a-)","El agua está muy fría. — Вода очень холодная.","Necesito un vaso de agua. — Мне нужен стакан воды."]},
+  {type:"noun", front:"día", cat:"SUST", group:"noun", tr:"день", article:"el", plural:"días", examples:["Hoy es un buen día. — Сегодня хороший день.","Todos los días trabajo. — Я работаю каждый день.","¿Qué día es hoy? — Какой сегодня день?"]},
+  {type:"noun", front:"mano", cat:"SUST", group:"noun", tr:"рука", article:"la", plural:"manos", examples:["Tengo la mano fría. — У меня холодная рука.","Dame la mano. — Дай мне руку.","Se lavó las manos. — Он(а) помыл(а) руки."]},
+  {type:"noun", front:"hombre", cat:"SUST", group:"noun", tr:"мужчина, человек", article:"el", plural:"hombres", examples:["Ese hombre es mi profesor. — Тот мужчина — мой учитель.","El hombre lleva un sombrero. — Мужчина носит шляпу.","Es un hombre muy trabajador. — Это очень трудолюбивый мужчина."]},
+  {type:"noun", front:"mujer", cat:"SUST", group:"noun", tr:"женщина", article:"la", plural:"mujeres", examples:["Mi mujer trabaja mucho. — Моя жена много работает.","La mujer sonríe. — Женщина улыбается.","Es una mujer fuerte. — Она сильная женщина."]},
+  {type:"noun", front:"niño", cat:"SUST", group:"noun", tr:"мальчик", article:"el", plural:"niños", examples:["El niño juega en el parque. — Мальчик играет в парке. (niña — девочка)","El niño llora. — Мальчик плачет.","Los niños juegan afuera. — Дети играют на улице."]},
+  {type:"noun", front:"trabajo", cat:"SUST", group:"noun", tr:"работа", article:"el", plural:"trabajos", examples:["Tengo mucho trabajo. — У меня много работы.","Busco un nuevo trabajo. — Я ищу новую работу.","El trabajo termina a las seis. — Работа заканчивается в шесть."]},
+  {type:"noun", front:"amigo", cat:"SUST", group:"noun", tr:"друг", article:"el", plural:"amigos", examples:["Es mi mejor amigo. — Он мой лучший друг. (amiga — подруга)","Mi amigo vive cerca. — Мой друг живёт рядом.","Somos buenos amigos. — Мы хорошие друзья."]},
+  {type:"noun", front:"ciudad", cat:"SUST", group:"noun", tr:"город", article:"la", plural:"ciudades", examples:["Madrid es una ciudad bonita. — Мадрид — красивый город.","Esta ciudad es muy antigua. — Этот город очень старый.","Vivo en una ciudad pequeña. — Я живу в маленьком городе."]},
+  {type:"noun", front:"país", cat:"SUST", group:"noun", tr:"страна", article:"el", plural:"países", examples:["España es mi país favorito. — Испания — моя любимая страна.","¿De qué país eres? — Из какой ты страны?","Este país tiene playas hermosas. — В этой стране красивые пляжи."]},
+  {type:"noun", front:"libro", cat:"SUST", group:"noun", tr:"книга", article:"el", plural:"libros", examples:["Leo un libro interesante. — Я читаю интересную книгу.","Este libro es muy interesante. — Эта книга очень интересная.","Compré tres libros nuevos. — Я купил три новые книги."]},
+  {type:"noun", front:"comida", cat:"SUST", group:"noun", tr:"еда", article:"la", plural:"comidas", examples:["La comida está lista. — Еда готова.","La comida mexicana es picante. — Мексиканская еда острая.","Preparo la comida para todos. — Я готовлю еду для всех."]},
+  {type:"noun", front:"dinero", cat:"SUST", group:"noun", tr:"деньги", article:"el", plural:"—", examples:["No tengo suficiente dinero. — У меня недостаточно денег.","Ahorro dinero cada mes. — Я коплю деньги каждый месяц.","No gastes tanto dinero. — Не трать столько денег."]},
+  {type:"noun", front:"familia", cat:"SUST", group:"noun", tr:"семья", article:"la", plural:"familias", examples:["Mi familia es grande. — Моя семья большая.","Toda mi familia vive aquí. — Вся моя семья живёт здесь.","Voy a visitar a mi familia. — Я пойду навестить свою семью."]},
+  {type:"noun", front:"padre", cat:"SUST", group:"noun", tr:"отец", article:"el", plural:"padres", examples:["Mi padre trabaja mucho. — Мой отец много работает.","Mi padre es médico. — Мой отец — врач.","El padre de Juan es profesor. — Отец Хуана — учитель."]},
+  {type:"noun", front:"madre", cat:"SUST", group:"noun", tr:"мать", article:"la", plural:"madres", examples:["Mi madre cocina bien. — Моя мама хорошо готовит.","Mi madre me llama todos los días. — Моя мама звонит мне каждый день.","Es una madre muy paciente. — Она очень терпеливая мама."]},
+  {type:"noun", front:"hijo", cat:"SUST", group:"noun", tr:"сын", article:"el", plural:"hijos", examples:["Tienen dos hijos. — У них двое сыновей. (hija — дочь)","Su hijo estudia medicina. — Его сын изучает медицину.","Tengo un hijo pequeño. — У меня маленький сын."]},
+  {type:"noun", front:"hermano", cat:"SUST", group:"noun", tr:"брат", article:"el", plural:"hermanos", examples:["Tengo un hermano mayor. — У меня есть старший брат. (hermana — сестра)","Mi hermano vive en Madrid. — Мой брат живёт в Мадриде.","Tengo dos hermanos. — У меня два брата."]},
+  {type:"noun", front:"coche", cat:"SUST", group:"noun", tr:"машина", article:"el", plural:"coches", examples:["El coche es nuevo. — Машина новая.","Mi coche está en el garaje. — Моя машина в гараже.","Vendo mi coche viejo. — Я продаю свою старую машину."]},
+  {type:"noun", front:"calle", cat:"SUST", group:"noun", tr:"улица", article:"la", plural:"calles", examples:["Vivo en esta calle. — Я живу на этой улице.","Hay mucho tráfico en esta calle. — На этой улице много движения.","Cruza la calle con cuidado. — Переходи улицу осторожно."]},
+  {type:"noun", front:"puerta", cat:"SUST", group:"noun", tr:"дверь", article:"la", plural:"puertas", examples:["Cierra la puerta, por favor. — Закрой дверь, пожалуйста.","La puerta está cerrada con llave. — Дверь закрыта на ключ.","Toca la puerta antes de entrar. — Постучи в дверь, прежде чем войти."]},
+  {type:"noun", front:"ventana", cat:"SUST", group:"noun", tr:"окно", article:"la", plural:"ventanas", examples:["Abre la ventana. — Открой окно.","Hace frío, cierra la ventana. — Холодно, закрой окно.","Desde la ventana se ve el mar. — Из окна видно море."]},
+  {type:"noun", front:"mesa", cat:"SUST", group:"noun", tr:"стол", article:"la", plural:"mesas", examples:["El libro está en la mesa. — Книга на столе.","Pon los platos en la mesa. — Поставь тарелки на стол.","La mesa es de madera. — Стол деревянный."]},
+  {type:"noun", front:"silla", cat:"SUST", group:"noun", tr:"стул", article:"la", plural:"sillas", examples:["Siéntate en esta silla. — Сядь на этот стул.","Esta silla es muy cómoda. — Этот стул очень удобный.","Trae una silla más. — Принеси ещё один стул."]},
+  {type:"noun", front:"cama", cat:"SUST", group:"noun", tr:"кровать", article:"la", plural:"camas", examples:["Voy a la cama. — Я иду спать.","Hago la cama por la mañana. — Я застилаю кровать утром.","La cama es muy grande. — Кровать очень большая."]},
+  {type:"noun", front:"escuela", cat:"SUST", group:"noun", tr:"школа", article:"la", plural:"escuelas", examples:["Los niños van a la escuela. — Дети идут в школу.","La escuela empieza a las ocho. — Школа начинается в восемь.","Mi escuela está cerca de casa. — Моя школа рядом с домом."]},
+  {type:"noun", front:"profesor", cat:"SUST", group:"noun", tr:"учитель", article:"el", plural:"profesores", examples:["Mi profesor es muy paciente. — Мой учитель очень терпеливый. (profesora — учительница)","El profesor explica bien. — Учитель хорошо объясняет.","Tengo un nuevo profesor de español. — У меня новый учитель испанского."]},
+  {type:"noun", front:"estudiante", cat:"SUST", group:"noun", tr:"студент", article:"el", plural:"estudiantes", examples:["Soy estudiante de español. — Я изучаю испанский.","Es un buen estudiante. — Он хороший студент.","Los estudiantes hacen preguntas. — Студенты задают вопросы."]},
+  {type:"noun", front:"número", cat:"SUST", group:"noun", tr:"номер, число", article:"el", plural:"números", examples:["¿Cuál es tu número de teléfono? — Какой у тебя номер телефона?","Marca este número. — Набери этот номер.","Mi número de la suerte es el siete. — Моё счастливое число — семь."]},
+  {type:"noun", front:"nombre", cat:"SUST", group:"noun", tr:"имя", article:"el", plural:"nombres", examples:["¿Cómo es tu nombre? — Как тебя зовут?","Escribe tu nombre aquí. — Напиши здесь своё имя.","No recuerdo su nombre. — Я не помню его имя."]},
+  {type:"noun", front:"año", cat:"SUST", group:"noun", tr:"год", article:"el", plural:"años", examples:["Tengo veinte años. — Мне двадцать лет.","El próximo año viajo a España. — В следующем году я поеду в Испанию.","Hace un año que vivo aquí. — Я живу здесь уже год."]},
+  {type:"noun", front:"semana", cat:"SUST", group:"noun", tr:"неделя", article:"la", plural:"semanas", examples:["Trabajo cinco días a la semana. — Я работаю пять дней в неделю.","Esta semana estoy ocupado. — На этой неделе я занят.","Nos vemos la próxima semana. — Увидимся на следующей неделе."]},
+  {type:"noun", front:"hora", cat:"SUST", group:"noun", tr:"час, время", article:"la", plural:"horas", examples:["¿Qué hora es? — Который час?","Llegamos en una hora. — Мы приедем через час.","Espera media hora más. — Подожди ещё полчаса."]},
+  {type:"noun", front:"noche", cat:"SUST", group:"noun", tr:"ночь", article:"la", plural:"noches", examples:["Buenas noches. — Спокойной ночи.","Trabajo por la noche. — Я работаю по ночам.","Fue una noche muy larga. — Это была очень долгая ночь."]},
+  {type:"noun", front:"mañana", cat:"SUST", group:"noun", tr:"утро, завтра", article:"la", plural:"mañanas", examples:["Nos vemos mañana por la mañana. — Увидимся завтра утром.","Me levanto temprano por la mañana. — Я встаю рано утром.","Mañana tengo una reunión. — Завтра у меня встреча."]},
+  {type:"noun", front:"tarde", cat:"SUST", group:"noun", tr:"вечер, день", article:"la", plural:"tardes", examples:["Buenas tardes. — Добрый день.","Llegaste tarde otra vez. — Ты снова опоздал.","Por la tarde vamos al parque. — Днём мы идём в парк."]},
+  {type:"noun", front:"vida", cat:"SUST", group:"noun", tr:"жизнь", article:"la", plural:"vidas", examples:["Me encanta la vida. — Я обожаю жизнь.","La vida es corta. — Жизнь коротка.","Cambié mi vida por completo. — Я полностью изменил свою жизнь."]},
+  {type:"noun", front:"mundo", cat:"SUST", group:"noun", tr:"мир", article:"el", plural:"mundos", examples:["El mundo es grande. — Мир большой.","Quiero viajar por el mundo. — Я хочу путешествовать по миру.","Es el mejor del mundo. — Он лучший в мире."]},
+  {type:"noun", front:"persona", cat:"SUST", group:"noun", tr:"человек", article:"la", plural:"personas", examples:["Es una persona amable. — Он(а) добрый человек. (всегда женский род!)","Es la persona correcta para el puesto. — Это подходящий человек для этой должности.","Cada persona es diferente. — Каждый человек уникален."]},
+  {type:"noun", front:"cosa", cat:"SUST", group:"noun", tr:"вещь, дело", article:"la", plural:"cosas", examples:["Tengo muchas cosas que hacer. — У меня много дел.","Esa cosa no funciona. — Эта штука не работает.","Hay una cosa que no entiendo. — Есть одна вещь, которую я не понимаю."]},
+  {type:"noun", front:"lugar", cat:"SUST", group:"noun", tr:"место", article:"el", plural:"lugares", examples:["Este es un lugar bonito. — Это красивое место.","Es un lugar tranquilo. — Это спокойное место.","Encontramos el lugar perfecto. — Мы нашли идеальное место."]},
+  {type:"noun", front:"problema", cat:"SUST", group:"noun", tr:"проблема", article:"el (муж.!)", plural:"problemas", examples:["Tenemos un problema. — У нас проблема. (муж. род, хотя оканчивается на -a)","Tenemos que resolver este problema. — Нам нужно решить эту проблему.","No hay ningún problema. — Нет никакой проблемы."]},
+  {type:"noun", front:"pie", cat:"SUST", group:"noun", tr:"нога, стопа", article:"el", plural:"pies", examples:["Voy a pie. — Я иду пешком.","Me duele el pie. — У меня болит нога.","Prefiero ir a pie. — Я предпочитаю идти пешком."]},
+  {type:"noun", front:"cabeza", cat:"SUST", group:"noun", tr:"голова", article:"la", plural:"cabezas", examples:["Me duele la cabeza. — У меня болит голова.","Usa la cabeza. — Думай головой.","Se golpeó la cabeza. — Он ударился головой."]},
+  {type:"noun", front:"corazón", cat:"SUST", group:"noun", tr:"сердце", article:"el", plural:"corazones", examples:["Tiene un buen corazón. — У него доброе сердце.","Mi corazón late rápido. — Моё сердце бьётся быстро.","Lo hago de corazón. — Я делаю это от всего сердца."]},
+  {type:"noun", front:"palabra", cat:"SUST", group:"noun", tr:"слово", article:"la", plural:"palabras", examples:["No entiendo esta palabra. — Я не понимаю это слово.","Esta palabra es difícil de pronunciar. — Это слово трудно произнести.","Dame tu palabra. — Дай мне слово (обещание)."]},
+  {type:"noun", front:"música", cat:"SUST", group:"noun", tr:"музыка", article:"la", plural:"—", examples:["Me gusta la música. — Мне нравится музыка.","Escucho música clásica. — Я слушаю классическую музыку.","La música está muy alta. — Музыка играет очень громко."]},
+  {type:"noun", front:"playa", cat:"SUST", group:"noun", tr:"пляж", article:"la", plural:"playas", examples:["Vamos a la playa. — Идём на пляж.","En verano vamos a la playa. — Летом мы едем на пляж.","La playa está llena de gente. — Пляж полон людей."]},
+
+  // ===================== ADJETIVOS (50) =====================
+  {type:"adj", front:"bueno", cat:"ADJ", group:"adj", tr:"хороший", forms:["bueno","buena","buenos","buenas"], examples:["Es un buen amigo. — Он хороший друг.","Este restaurante es muy bueno. — Этот ресторан очень хороший.","Tienes buenas ideas. — У тебя хорошие идеи."]},
+  {type:"adj", front:"malo", cat:"ADJ", group:"adj", tr:"плохой", forms:["malo","mala","malos","malas"], examples:["Hace mal tiempo. — Плохая погода.","Fue un día malo. — Это был плохой день.","No es tan malo como piensas. — Это не так плохо, как ты думаешь."]},
+  {type:"adj", front:"grande", cat:"ADJ", group:"adj", tr:"большой", forms:["grande","grande","grandes","grandes"], examples:["Viven en una casa grande. — Они живут в большом доме.","Vive en una ciudad grande. — Он(а) живёт в большом городе.","Tiene una familia grande. — У него большая семья."]},
+  {type:"adj", front:"pequeño", cat:"ADJ", group:"adj", tr:"маленький", forms:["pequeño","pequeña","pequeños","pequeñas"], examples:["Tengo un perro pequeño. — У меня маленькая собака.","Compramos un apartamento pequeño. — Мы купили маленькую квартиру.","Es un problema pequeño. — Это небольшая проблема."]},
+  {type:"adj", front:"nuevo", cat:"ADJ", group:"adj", tr:"новый", forms:["nuevo","nueva","nuevos","nuevas"], examples:["Compré un coche nuevo. — Я купил новую машину.","Tengo un teléfono nuevo. — У меня новый телефон.","Empezamos un proyecto nuevo. — Мы начинаем новый проект."]},
+  {type:"adj", front:"viejo", cat:"ADJ", group:"adj", tr:"старый", forms:["viejo","vieja","viejos","viejas"], examples:["Es un edificio viejo. — Это старое здание.","Es un amigo viejo. — Это старый друг.","El puente es muy viejo. — Мост очень старый."]},
+  {type:"adj", front:"feliz", cat:"ADJ", group:"adj", tr:"счастливый", forms:["feliz","feliz","felices","felices"], examples:["Estoy muy feliz hoy. — Я очень счастлив сегодня.","Se ve muy feliz. — Он(а) выглядит очень счастливым.","Fue el día más feliz de mi vida. — Это был самый счастливый день моей жизни."]},
+  {type:"adj", front:"triste", cat:"ADJ", group:"adj", tr:"грустный", forms:["triste","triste","tristes","tristes"], examples:["Ella está triste. — Она грустная.","La película tiene un final triste. — У фильма грустный финал.","Se siente triste hoy. — Сегодня ему(ей) грустно."]},
+  {type:"adj", front:"fácil", cat:"ADJ", group:"adj", tr:"лёгкий", forms:["fácil","fácil","fáciles","fáciles"], examples:["Este examen es fácil. — Этот экзамен лёгкий.","El examen fue muy fácil. — Экзамен был очень лёгким.","No es tan fácil como parece. — Это не так просто, как кажется."]},
+  {type:"adj", front:"difícil", cat:"ADJ", group:"adj", tr:"трудный", forms:["difícil","difícil","difíciles","difíciles"], examples:["El español no es difícil. — Испанский не сложный.","Es una decisión difícil. — Это трудное решение.","El chino es difícil de aprender. — Китайский трудно учить."]},
+  {type:"adj", front:"importante", cat:"ADJ", group:"adj", tr:"важный", forms:["importante","importante","importantes","importantes"], examples:["Es un tema importante. — Это важная тема.","Es importante llegar a tiempo. — Важно приходить вовремя.","Tengo una reunión importante. — У меня важная встреча."]},
+  {type:"adj", front:"bonito", cat:"ADJ", group:"adj", tr:"красивый", forms:["bonito","bonita","bonitos","bonitas"], examples:["Qué vestido tan bonito. — Какое красивое платье.","Tienen un jardín muy bonito. — У них очень красивый сад.","Qué bonito paisaje. — Какой красивый пейзаж."]},
+  {type:"adj", front:"alto", cat:"ADJ", group:"adj", tr:"высокий", forms:["alto","alta","altos","altas"], examples:["Mi hermano es muy alto. — Мой брат очень высокий.","El edificio es muy alto. — Здание очень высокое.","Juega al baloncesto porque es alto. — Он играет в баскетбол, потому что высокий."]},
+  {type:"adj", front:"bajo", cat:"ADJ", group:"adj", tr:"низкий", forms:["bajo","baja","bajos","bajas"], examples:["La mesa es baja. — Стол низкий.","El techo es bajo. — Потолок низкий.","Habla en voz baja. — Он говорит тихим голосом."]},
+  {type:"adj", front:"rápido", cat:"ADJ", group:"adj", tr:"быстрый", forms:["rápido","rápida","rápidos","rápidas"], examples:["El coche es muy rápido. — Машина очень быстрая.","Necesito una respuesta rápida. — Мне нужен быстрый ответ.","Camina muy rápido. — Он(а) идёт очень быстро."]},
+  {type:"adj", front:"lento", cat:"ADJ", group:"adj", tr:"медленный", forms:["lento","lenta","lentos","lentas"], examples:["El tren es lento. — Поезд медленный.","El internet está muy lento. — Интернет очень медленный.","Es un proceso lento. — Это медленный процесс."]},
+  {type:"adj", front:"guapo", cat:"ADJ", group:"adj", tr:"красивый", forms:["guapo","guapa","guapos","guapas"], examples:["Es un chico muy guapo. — Он очень красивый парень.","Está muy guapo hoy. — Сегодня он очень красивый.","Es el chico más guapo de la clase. — Он самый красивый парень в классе."]},
+  {type:"adj", front:"inteligente", cat:"ADJ", group:"adj", tr:"умный", forms:["inteligente","inteligente","inteligentes","inteligentes"], examples:["Es una mujer inteligente. — Она умная женщина.","Es una decisión inteligente. — Это умное решение.","Todos dicen que es muy inteligente. — Все говорят, что он(а) очень умный(ая)."]},
+  {type:"adj", front:"tonto", cat:"ADJ", group:"adj", tr:"глупый", forms:["tonto","tonta","tontos","tontas"], examples:["No seas tonto. — Не будь глупым.","Fue una pregunta tonta. — Это был глупый вопрос.","No te hagas el tonto. — Не притворяйся дурачком."]},
+  {type:"adj", front:"amable", cat:"ADJ", group:"adj", tr:"добрый", forms:["amable","amable","amables","amables"], examples:["Eres muy amable. — Ты очень любезен.","Gracias por ser tan amable. — Спасибо, что ты такой любезный.","Es una persona muy amable. — Это очень добрый человек."]},
+  {type:"adj", front:"simpático", cat:"ADJ", group:"adj", tr:"симпатичный", forms:["simpático","simpática","simpáticos","simpáticas"], examples:["Tu amigo es simpático. — Твой друг приятный.","Todos piensan que es simpático. — Все думают, что он приятный.","Es un chico muy simpático. — Он очень симпатичный парень."]},
+  {type:"adj", front:"antipático", cat:"ADJ", group:"adj", tr:"неприятный", forms:["antipático","antipática","antipáticos","antipáticas"], examples:["Ese hombre es antipático. — Тот мужчина неприятный.","El vecino es un poco antipático. — Сосед немного неприятный.","No seas antipático con ella. — Не будь груб с ней."]},
+  {type:"adj", front:"generoso", cat:"ADJ", group:"adj", tr:"щедрый", forms:["generoso","generosa","generosos","generosas"], examples:["Mi tío es muy generoso. — Мой дядя очень щедрый.","Fue muy generoso con nosotros. — Он был очень щедр с нами.","Dio una propina generosa. — Он дал щедрые чаевые."]},
+  {type:"adj", front:"tímido", cat:"ADJ", group:"adj", tr:"застенчивый", forms:["tímido","tímida","tímidos","tímidas"], examples:["Ella es un poco tímida. — Она немного застенчива.","De niño era muy tímido. — В детстве он был очень застенчивым.","No seas tímido, pregunta. — Не стесняйся, спроси."]},
+  {type:"adj", front:"valiente", cat:"ADJ", group:"adj", tr:"смелый", forms:["valiente","valiente","valientes","valientes"], examples:["El soldado es valiente. — Солдат смелый.","Fue una decisión valiente. — Это было смелое решение.","Los bomberos son muy valientes. — Пожарные очень смелые."]},
+  {type:"adj", front:"fuerte", cat:"ADJ", group:"adj", tr:"сильный", forms:["fuerte","fuerte","fuertes","fuertes"], examples:["Es muy fuerte. — Он очень сильный.","Tiene un olor fuerte. — У этого сильный запах.","Hace un viento muy fuerte. — Дует очень сильный ветер."]},
+  {type:"adj", front:"débil", cat:"ADJ", group:"adj", tr:"слабый", forms:["débil","débil","débiles","débiles"], examples:["Me siento débil hoy. — Я чувствую себя слабым сегодня.","La señal es muy débil aquí. — Здесь очень слабый сигнал.","Se sintió débil después de la gripe. — Он почувствовал слабость после гриппа."]},
+  {type:"adj", front:"gordo", cat:"ADJ", group:"adj", tr:"толстый", forms:["gordo","gorda","gordos","gordas"], examples:["El gato está gordo. — Кот толстый.","El perro está un poco gordo. — Собака немного толстая.","Comió demasiado y ahora está gordo. — Он слишком много ел и теперь толстый."]},
+  {type:"adj", front:"delgado", cat:"ADJ", group:"adj", tr:"худой", forms:["delgado","delgada","delgados","delgadas"], examples:["Es alta y delgada. — Она высокая и стройная.","Está más delgado que antes. — Он стал стройнее, чем раньше.","Es un chico alto y delgado. — Это высокий и стройный парень."]},
+  {type:"adj", front:"joven", cat:"ADJ", group:"adj", tr:"молодой", forms:["joven","joven","jóvenes","jóvenes"], examples:["Es un chico joven. — Он молодой парень.","Se ve muy joven para su edad. — Он выглядит очень молодо для своего возраста.","Hay muchos jóvenes en la fiesta. — На вечеринке много молодых людей."]},
+  {type:"adj", front:"mayor", cat:"ADJ", group:"adj", tr:"старший", forms:["mayor","mayor","mayores","mayores"], examples:["Mi abuela es mayor. — Моя бабушка пожилая.","Mi hermano mayor vive en otra ciudad. — Мой старший брат живёт в другом городе.","Es la persona mayor del grupo. — Он самый старший в группе."]},
+  {type:"adj", front:"rico", cat:"ADJ", group:"adj", tr:"богатый", forms:["rico","rica","ricos","ricas"], examples:["Es un hombre rico. — Он богатый человек.","Se hizo rico muy joven. — Он разбогател совсем молодым.","Este postre está muy rico. — Этот десерт очень вкусный."]},
+  {type:"adj", front:"pobre", cat:"ADJ", group:"adj", tr:"бедный", forms:["pobre","pobre","pobres","pobres"], examples:["La familia es pobre. — Семья бедная.","Creció en una familia pobre. — Он вырос в бедной семье.","¡Pobre chico, qué mala suerte! — Бедный парень, как не повезло!"]},
+  {type:"adj", front:"caro", cat:"ADJ", group:"adj", tr:"дорогой", forms:["caro","cara","caros","caras"], examples:["Este coche es muy caro. — Эта машина очень дорогая.","El hotel resultó muy caro. — Отель оказался очень дорогим.","Es un regalo demasiado caro. — Это слишком дорогой подарок."]},
+  {type:"adj", front:"barato", cat:"ADJ", group:"adj", tr:"дешёвый", forms:["barato","barata","baratos","baratas"], examples:["Busco algo barato. — Я ищу что-то дешёвое.","Encontré un vuelo barato. — Я нашёл дешёвый билет на самолёт.","Este mercado es más barato. — Этот рынок дешевле."]},
+  {type:"adj", front:"limpio", cat:"ADJ", group:"adj", tr:"чистый", forms:["limpio","limpia","limpios","limpias"], examples:["La casa está limpia. — Дом чистый.","El baño está muy limpio. — Ванная очень чистая.","Prefiero un espacio limpio y ordenado. — Я предпочитаю чистое и опрятное пространство."]},
+  {type:"adj", front:"sucio", cat:"ADJ", group:"adj", tr:"грязный", forms:["sucio","sucia","sucios","sucias"], examples:["Tu ropa está sucia. — Твоя одежда грязная.","Tienes las manos sucias. — У тебя грязные руки.","El coche está muy sucio. — Машина очень грязная."]},
+  {type:"adj", front:"oscuro", cat:"ADJ", group:"adj", tr:"тёмный", forms:["oscuro","oscura","oscuros","oscuras"], examples:["La habitación está oscura. — Комната тёмная.","Es un color oscuro. — Это тёмный цвет.","La calle está muy oscura de noche. — Улица очень тёмная ночью."]},
+  {type:"adj", front:"claro", cat:"ADJ", group:"adj", tr:"светлый", forms:["claro","clara","claros","claras"], examples:["El cielo está claro. — Небо ясное.","Explica de manera muy clara. — Он объясняет очень ясно.","El agua del lago está clara. — Вода в озере прозрачная."]},
+  {type:"adj", front:"caliente", cat:"ADJ", group:"adj", tr:"горячий", forms:["caliente","caliente","calientes","calientes"], examples:["El café está caliente. — Кофе горячий.","El sol está muy caliente hoy. — Сегодня солнце очень жаркое.","Ten cuidado, el plato está caliente. — Осторожно, тарелка горячая."]},
+  {type:"adj", front:"frío", cat:"ADJ", group:"adj", tr:"холодный", forms:["frío","fría","fríos","frías"], examples:["El agua está fría. — Вода холодная.","Hace mucho frío afuera. — На улице очень холодно.","El viento frío entra por la ventana. — Холодный ветер дует из окна."]},
+  {type:"adj", front:"seco", cat:"ADJ", group:"adj", tr:"сухой", forms:["seco","seca","secos","secas"], examples:["El clima es seco. — Климат сухой.","El aire es muy seco en invierno. — Воздух очень сухой зимой.","Tengo la piel seca. — У меня сухая кожа."]},
+  {type:"adj", front:"mojado", cat:"ADJ", group:"adj", tr:"мокрый", forms:["mojado","mojada","mojados","mojadas"], examples:["Mi ropa está mojada. — Моя одежда мокрая.","El suelo está mojado, ten cuidado. — Пол мокрый, будь осторожен.","Llegué a casa completamente mojado. — Я пришёл домой полностью мокрым."]},
+  {type:"adj", front:"lleno", cat:"ADJ", group:"adj", tr:"полный", forms:["lleno","llena","llenos","llenas"], examples:["El vaso está lleno. — Стакан полный.","El autobús está lleno. — Автобус переполнен.","Tengo el estómago lleno. — Я сыт."]},
+  {type:"adj", front:"vacío", cat:"ADJ", group:"adj", tr:"пустой", forms:["vacío","vacía","vacíos","vacías"], examples:["La casa está vacía. — Дом пустой.","El cine estaba casi vacío. — Кинотеатр был почти пуст.","Encontré un asiento vacío. — Я нашёл свободное место."]},
+  {type:"adj", front:"abierto", cat:"ADJ", group:"adj", tr:"открытый", forms:["abierto","abierta","abiertos","abiertas"], examples:["La tienda está abierta. — Магазин открыт.","La tienda está abierta hasta las diez. — Магазин открыт до десяти.","Deja la ventana abierta. — Оставь окно открытым."]},
+  {type:"adj", front:"cerrado", cat:"ADJ", group:"adj", tr:"закрытый", forms:["cerrado","cerrada","cerrados","cerradas"], examples:["El museo está cerrado. — Музей закрыт.","El banco está cerrado los domingos. — Банк закрыт по воскресеньям.","Encontré la puerta cerrada. — Я обнаружил, что дверь закрыта."]},
+  {type:"adj", front:"libre", cat:"ADJ", group:"adj", tr:"свободный", forms:["libre","libre","libres","libres"], examples:["¿Estás libre esta noche? — Ты свободен сегодня вечером?","¿Tienes tiempo libre mañana? — У тебя есть свободное время завтра?","Por fin soy libre. — Наконец-то я свободен."]},
+  {type:"adj", front:"ocupado", cat:"ADJ", group:"adj", tr:"занятый", forms:["ocupado","ocupada","ocupados","ocupadas"], examples:["Estoy muy ocupado. — Я очень занят.","La línea está ocupada. — Линия занята.","Estuve muy ocupado toda la semana. — Я был очень занят всю неделю."]},
+  {type:"adj", front:"cansado", cat:"ADJ", group:"adj", tr:"уставший", forms:["cansado","cansada","cansados","cansadas"], examples:["Estoy cansado. — Я устал.","Después del viaje estaba muy cansado. — После поездки я был очень уставшим.","Se ve cansada hoy. — Сегодня она выглядит уставшей."]},
+
+  // ===================== PREPOSICIONES (10) =====================
+  {type:"prep", front:"a", cat:"PREP", group:"prep", tr:"к, в", examples:["Voy a la escuela. — Я иду в школу.","Llamo a mi madre. — Я звоню маме.","Vamos a las nueve. — Мы идём в девять."]},
+  {type:"prep", front:"de", cat:"PREP", group:"prep", tr:"из, от", examples:["Soy de Rusia. — Я из России.","El libro es de Juan. — Книга принадлежит Хуану.","Salgo de casa a las ocho. — Я выхожу из дома в восемь."]},
+  {type:"prep", front:"en", cat:"PREP", group:"prep", tr:"в, на", examples:["Estoy en casa. — Я дома.","Trabajo en una oficina. — Я работаю в офисе.","Nos vemos en la estación. — Увидимся на вокзале."]},
+  {type:"prep", front:"con", cat:"PREP", group:"prep", tr:"с", examples:["Voy con mis amigos. — Я иду со своими друзьями.","Hablo con mi jefe. — Я разговариваю со своим начальником.","Vengo con un amigo. — Я приду с другом."]},
+  {type:"prep", front:"sin", cat:"PREP", group:"prep", tr:"без", examples:["Café sin azúcar. — Кофе без сахара.","No puedo vivir sin ti. — Я не могу жить без тебя.","Salió sin decir nada. — Он ушёл, ничего не сказав."]},
+  {type:"prep", front:"para", cat:"PREP", group:"prep", tr:"для, чтобы", examples:["Esto es para ti. — Это для тебя.","Estudio para el examen. — Я готовлюсь к экзамену.","Este regalo es para mi madre. — Этот подарок для моей мамы."]},
+  {type:"prep", front:"por", cat:"PREP", group:"prep", tr:"из-за, через", examples:["Gracias por tu ayuda. — Спасибо за твою помощь.","Caminamos por la calle. — Мы идём по улице.","Lo hice por ti. — Я сделал это ради тебя."]},
+  {type:"prep", front:"sobre", cat:"PREP", group:"prep", tr:"на, о", examples:["El libro está sobre la mesa. — Книга на столе.","Hablamos sobre el futuro. — Мы говорим о будущем.","El avión vuela sobre la ciudad. — Самолёт летит над городом."]},
+  {type:"prep", front:"entre", cat:"PREP", group:"prep", tr:"между", examples:["Está entre la casa y el parque. — Это между домом и парком.","El secreto queda entre nosotros. — Секрет останется между нами.","Elige entre estas dos opciones. — Выбери между этими двумя вариантами."]},
+  {type:"prep", front:"desde", cat:"PREP", group:"prep", tr:"с, начиная с", examples:["Trabajo desde las nueve. — Я работаю с девяти часов.","Vivo aquí desde el año pasado. — Я живу здесь с прошлого года.","Se ve el mar desde mi ventana. — Из моего окна видно море."]},
+];
+
+// ---------- Разбор допустимых ответов из строки перевода ----------
+function normalizeStr(s){
+  return s.toLowerCase()
+    .replace(/[^а-яёa-z\s-]/gi,'')
+    .trim()
+    .replace(/\s+/g,' ');
+}
+function acceptedAnswers(tr){
+  const parens = [...tr.matchAll(/\(([^)]+)\)/g)].map(m=>m[1]);
+  const main = tr.replace(/\([^)]*\)/g,'');
+  const parts = main.split(/[,;/]/).map(s=>s.trim()).filter(Boolean);
+  const parenParts = parens.flatMap(p=>p.split(/[,;/]/).map(s=>s.trim()));
+  return [...parts, ...parenParts].map(normalizeStr).filter(Boolean);
+}
+function toFeminineAdj(w){
+  if(/(ый|ой|ий)$/.test(w)) return w.replace(/(ый|ой|ий)$/, 'ая');
+  return null;
+}
+const nounGenderAlt = {
+  "niño":["девочка"], "amigo":["подруга"], "hijo":["дочь"],
+  "hermano":["сестра"], "profesor":["учительница"], "estudiante":["студентка"]
+};
+items.forEach(it=>{
+  let answers = acceptedAnswers(it.tr);
+  if(it.type==="adj"){
+    const femForms = answers.map(toFeminineAdj).filter(Boolean);
+    answers = [...answers, ...femForms];
+  }
+  if(it.type==="noun" && nounGenderAlt[it.front]){
+    answers = [...answers, ...nounGenderAlt[it.front].map(normalizeStr)];
+  }
+  it.answers = [...new Set(answers)];
+});
+
+const groupLabels = {ALL:"все", verb:"глаголы", noun:"существительные", adj:"прилагательные", prep:"предлоги"};
+const catLabels = {ALL:"все", AR:"AR", ER:"ER", IR:"IR", IRR:"неправильные", SUST:"сущ.", ADJ:"прил.", PREP:"предл."};
+const taskLabelByGroup = {
+  verb:"напиши перевод (инфинитив)",
+  noun:"напиши перевод",
+  adj:"напиши перевод (м.р. или ж.р.)",
+  prep:"напиши перевод"
+};
+
+// ================= Профили пользователей =================
+const USERS_KEY = "tarjetas_users_v1";
+const CURRENT_USER_KEY = "tarjetas_current_user_v1";
+
+function loadUsers(){
+  try{ const raw = localStorage.getItem(USERS_KEY); if(raw) return JSON.parse(raw); }catch(e){}
+  return [];
+}
+function saveUsers(list){ try{ localStorage.setItem(USERS_KEY, JSON.stringify(list)); }catch(e){} }
+function loadCurrentUserName(){
+  try{ return localStorage.getItem(CURRENT_USER_KEY) || null; }catch(e){ return null; }
+}
+function saveCurrentUserName(name){ try{ localStorage.setItem(CURRENT_USER_KEY, name); }catch(e){} }
+
+let users = loadUsers();
+let currentUser = loadCurrentUserName();
+
+function statsKeyFor(user){ return "tarjetas_stats_v1_" + user; }
+function loadStats(){
+  try{
+    const raw = localStorage.getItem(statsKeyFor(currentUser));
+    if(raw) return JSON.parse(raw);
+  }catch(e){}
+  return { total:{ok:0,bad:0}, byGroup:{} };
+}
+function saveStats(s){ try{ localStorage.setItem(statsKeyFor(currentUser), JSON.stringify(s)); }catch(e){} }
+let stats = { total:{ok:0,bad:0}, byGroup:{} };
+
+function recordAnswer(it, correct){
+  stats.total[correct?"ok":"bad"]++;
+  const key = it.group + ":" + it.cat;
+  if(!stats.byGroup[key]) stats.byGroup[key] = {ok:0,bad:0};
+  stats.byGroup[key][correct?"ok":"bad"]++;
+  saveStats(stats);
+  renderStatbar();
+}
+function renderStatbar(){
+  document.getElementById("okCount").textContent = stats.total.ok;
+  document.getElementById("badCount").textContent = stats.total.bad;
+  const tot = stats.total.ok + stats.total.bad;
+  document.getElementById("accPct").textContent = tot ? Math.round(stats.total.ok/tot*100)+"%" : "—";
+  document.getElementById("currentUserLabel").textContent = currentUser || "—";
+}
+
+const profileModalBg = document.getElementById("profileModalBg");
+const profileListEl = document.getElementById("profileList");
+const newProfileInput = document.getElementById("newProfileInput");
+
+function renderProfileList(){
+  profileListEl.innerHTML = "";
+  if(users.length===0){
+    const p = document.createElement("p");
+    p.className = "hint";
+    p.textContent = "Пока нет ни одного профиля — создай первый ниже.";
+    profileListEl.appendChild(p);
+    return;
+  }
+  users.forEach(name=>{
+    const row = document.createElement("div");
+    row.className = "profile-row";
+    const nameSpan = document.createElement("span");
+    nameSpan.textContent = "👤 " + name + (name===currentUser ? " (текущий)" : "");
+    nameSpan.onclick = ()=> selectUser(name);
+    const del = document.createElement("span");
+    del.className = "del";
+    del.textContent = "удалить";
+    del.onclick = (e)=>{
+      e.stopPropagation();
+      if(confirm(`Удалить профиль «${name}» вместе со статистикой?`)){
+        deleteUser(name);
+      }
+    };
+    row.appendChild(nameSpan);
+    row.appendChild(del);
+    profileListEl.appendChild(row);
+  });
+}
+
+function selectUser(name){
+  currentUser = name;
+  saveCurrentUserName(name);
+  stats = loadStats();
+  renderStatbar();
+  closeProfileModal();
+  rebuildDeck();
+}
+
+function deleteUser(name){
+  try{ localStorage.removeItem(statsKeyFor(name)); }catch(e){}
+  users = users.filter(u=>u!==name);
+  saveUsers(users);
+  if(currentUser===name){
+    currentUser = users[0] || null;
+    saveCurrentUserName(currentUser || "");
+    stats = currentUser ? loadStats() : { total:{ok:0,bad:0}, byGroup:{} };
+    renderStatbar();
+  }
+  renderProfileList();
+  if(!currentUser){ openProfileModal(true); }
+}
+
+function addProfile(){
+  const name = newProfileInput.value.trim();
+  if(!name) return;
+  if(users.includes(name)){
+    selectUser(name);
+    newProfileInput.value = "";
+    return;
+  }
+  users.push(name);
+  saveUsers(users);
+  newProfileInput.value = "";
+  selectUser(name);
+}
+
+document.getElementById("addProfileBtn").onclick = addProfile;
+newProfileInput.addEventListener("keydown",(e)=>{ if(e.key==="Enter") addProfile(); });
+
+function openProfileModal(forced){
+  renderProfileList();
+  profileModalBg.classList.add("open");
+  document.getElementById("profileModalCloseBtn").style.display = forced ? "none" : "block";
+}
+function closeProfileModal(){
+  if(!currentUser) return; // нельзя закрыть, пока не выбран профиль
+  profileModalBg.classList.remove("open");
+}
+document.getElementById("profileModalCloseBtn").onclick = closeProfileModal;
+document.getElementById("switchProfileBtn").onclick = ()=> openProfileModal(false);
+
+function initProfiles(){
+  if(!currentUser || !users.includes(currentUser)){
+    currentUser = null;
+    openProfileModal(true);
+  }else{
+    stats = loadStats();
+  }
+  renderStatbar();
+}
+
+// ================= Логика карточек =================
+let currentGroup = "ALL";
+let currentCat = "ALL";
+let deck = [];
+let idx = 0;
+let answered = false;
+
+const cardEl = document.getElementById("card");
+const infEl = document.getElementById("infinitive");
+const taskLabelEl = document.getElementById("taskLabel");
+const trEl = document.getElementById("translation");
+const flagEl = document.getElementById("catFlag");
+const backBodyEl = document.getElementById("backBody");
+const feedbackEl = document.getElementById("feedback");
+const counterEl = document.getElementById("counter");
+const groupsEl = document.getElementById("groups");
+const tabsEl = document.getElementById("tabs");
+const answerInput = document.getElementById("answerInput");
+const checkBtn = document.getElementById("checkBtn");
+
+function buildGroups(){
+  const groups = ["ALL","verb","noun","adj","prep"];
+  groupsEl.innerHTML = "";
+  groups.forEach(g=>{
+    const btn = document.createElement("div");
+    btn.className = "group-btn" + (g===currentGroup ? " active":"");
+    btn.textContent = groupLabels[g];
+    btn.onclick = ()=>{ currentGroup=g; currentCat="ALL"; buildGroups(); buildTabs(); rebuildDeck(); };
+    groupsEl.appendChild(btn);
+  });
+}
+function catsForGroup(g){
+  if(g==="verb") return ["ALL","AR","ER","IR","IRR"];
+  if(g==="noun") return ["ALL","SUST"];
+  if(g==="adj") return ["ALL","ADJ"];
+  if(g==="prep") return ["ALL","PREP"];
+  return ["ALL"];
+}
+function buildTabs(){
+  const cats = catsForGroup(currentGroup);
+  tabsEl.innerHTML = "";
+  if(cats.length<=1) return;
+  cats.forEach(c=>{
+    const btn = document.createElement("div");
+    btn.className = "tab" + (c===currentCat ? " active":"");
+    btn.dataset.cat = c;
+    btn.textContent = catLabels[c];
+    btn.onclick = ()=>{ currentCat=c; buildTabs(); rebuildDeck(); };
+    tabsEl.appendChild(btn);
+  });
+}
+function rebuildDeck(){
+  deck = items.map((v,i)=>i).filter(i=>{
+    const it = items[i];
+    const groupOk = currentGroup==="ALL" || it.group===currentGroup;
+    const catOk = currentCat==="ALL" || it.cat===currentCat;
+    return groupOk && catOk;
+  });
+  idx = 0;
+  showQuestion();
+}
+
+function showQuestion(){
+  answered = false;
+  cardEl.classList.remove("flipped");
+  cardEl.classList.remove("answered");
+  const it = items[deck[idx]];
+  infEl.textContent = it.front;
+  flagEl.textContent = catLabels[it.cat];
+  flagEl.className = "cat-flag cat-" + it.cat;
+  taskLabelEl.textContent = taskLabelByGroup[it.group];
+  answerInput.value = "";
+  answerInput.disabled = false;
+  checkBtn.disabled = false;
+  counterEl.textContent = `${idx+1} / ${deck.length}`;
+  setTimeout(()=>answerInput.focus(), 50);
+}
+
+function revealBack(it, correct, userAnswer){
+  trEl.textContent = it.tr;
+  feedbackEl.className = "feedback " + (correct ? "ok":"bad");
+  feedbackEl.textContent = correct ? "✅ Верно!" : `❌ Неверно. Ты написал: «${userAnswer || "—"}»`;
+  backBodyEl.innerHTML = "";
+
+  if(it.type==="verb"){
+    const grid = document.createElement("div");
+    grid.className = "conj-grid";
+    pronouns.forEach((p,i)=>{
+      const row = document.createElement("div");
+      row.className = "conj-row";
+      row.innerHTML = `<span class="pron">${p}</span><span class="form">${it.forms[i]}</span>`;
+      grid.appendChild(row);
+    });
+    backBodyEl.appendChild(grid);
+  }
+  if(it.type==="noun"){
+    const grid = document.createElement("div");
+    grid.className = "form-grid";
+    grid.innerHTML = `
+      <div class="form-cell"><span class="lbl">артикль</span><span class="val">${it.article}</span></div>
+      <div class="form-cell"><span class="lbl">множ. число</span><span class="val">${it.plural}</span></div>`;
+    backBodyEl.appendChild(grid);
+  }
+  if(it.type==="adj"){
+    const grid = document.createElement("div");
+    grid.className = "form-grid";
+    grid.innerHTML = `
+      <div class="form-cell"><span class="lbl">м.р. ед.</span><span class="val">${it.forms[0]}</span></div>
+      <div class="form-cell"><span class="lbl">ж.р. ед.</span><span class="val">${it.forms[1]}</span></div>
+      <div class="form-cell"><span class="lbl">м.р. мн.</span><span class="val">${it.forms[2]}</span></div>
+      <div class="form-cell"><span class="lbl">ж.р. мн.</span><span class="val">${it.forms[3]}</span></div>`;
+    backBodyEl.appendChild(grid);
+  }
+  if(it.examples && it.examples.length){
+    const wrap = document.createElement("div");
+    wrap.className = "examples-list";
+    it.examples.forEach(ex=>{
+      const exEl = document.createElement("div");
+      exEl.className = "example";
+      exEl.textContent = ex;
+      wrap.appendChild(exEl);
+    });
+    backBodyEl.appendChild(wrap);
+  }
+
+  cardEl.querySelector(".front").style.borderColor = correct ? "var(--ok)" : "var(--bad)";
+  cardEl.classList.add("flipped");
+  cardEl.classList.add("answered");
+  taskLabelEl.textContent = "нажми на карточку, чтобы перевернуть";
+}
+
+function submitAnswer(){
+  if(answered) return;
+  const it = items[deck[idx]];
+  const raw = answerInput.value;
+  const userNorm = normalizeStr(raw);
+  const correct = userNorm.length>0 && it.answers.includes(userNorm);
+  answered = true;
+  answerInput.disabled = true;
+  checkBtn.disabled = true;
+  recordAnswer(it, correct);
+  revealBack(it, correct, raw.trim());
+}
+
+checkBtn.addEventListener("click", submitAnswer);
+answerInput.addEventListener("keydown", (e)=>{
+  if(e.key==="Enter") submitAnswer();
+});
+
+cardEl.addEventListener("click", ()=>{
+  if(answered) cardEl.classList.toggle("flipped");
+});
+
+document.getElementById("nextBtn").onclick = ()=>{
+  idx = (idx+1) % deck.length;
+  showQuestion();
+};
+document.getElementById("prevBtn").onclick = ()=>{
+  idx = (idx-1+deck.length) % deck.length;
+  showQuestion();
+};
+document.getElementById("shuffleBtn").onclick = ()=>{
+  for(let i=deck.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [deck[i],deck[j]]=[deck[j],deck[i]];
+  }
+  idx = 0;
+  showQuestion();
+};
+
+// ---------- Модалка со статистикой по темам ----------
+const modalBg = document.getElementById("modalBg");
+const modalBody = document.getElementById("modalBody");
+document.getElementById("openStats").onclick = ()=>{
+  modalBody.innerHTML = "";
+  const groupOrder = ["verb","noun","adj","prep"];
+  const catOrder = {verb:["AR","ER","IR","IRR"], noun:["SUST"], adj:["ADJ"], prep:["PREP"]};
+  groupOrder.forEach(g=>{
+    catOrder[g].forEach(c=>{
+      const key = g+":"+c;
+      const s = stats.byGroup[key] || {ok:0,bad:0};
+      const tot = s.ok + s.bad;
+      const pct = tot ? Math.round(s.ok/tot*100)+"%" : "—";
+      const row = document.createElement("div");
+      row.className = "modal-row";
+      const label = g==="verb" ? `Глаголы (${catLabels[c]})` : (g==="noun" ? "Существительные" : g==="adj" ? "Прилагательные" : "Предлоги");
+      row.innerHTML = `<span class="n">${label}</span><span class="v"><b>${s.ok}</b> / <span class="${s.bad?'bad':''}">${s.bad}</span> · ${pct}</span>`;
+      modalBody.appendChild(row);
+    });
+  });
+  modalBg.classList.add("open");
+};
+document.getElementById("modalCloseBtn").onclick = ()=> modalBg.classList.remove("open");
+document.getElementById("modalResetBtn").onclick = ()=>{
+  if(confirm(`Точно сбросить статистику профиля «${currentUser}»?`)){
+    stats = { total:{ok:0,bad:0}, byGroup:{} };
+    saveStats(stats);
+    renderStatbar();
+    modalBg.classList.remove("open");
+  }
+};
+modalBg.addEventListener("click",(e)=>{ if(e.target===modalBg) modalBg.classList.remove("open"); });
+
+initProfiles();
+buildGroups();
+buildTabs();
+rebuildDeck();
+</script>
+
+</body>
+</html>

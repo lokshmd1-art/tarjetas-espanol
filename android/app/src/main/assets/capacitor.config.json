@@ -1,0 +1,6 @@
+{
+	"appId": "com.espanol.tarjetas",
+	"appName": "Tarjetas de Español",
+	"webDir": "www",
+	"bundledWebRuntime": false
+}
